@@ -15,7 +15,7 @@ pub struct Board {
 }
 
 impl Board {
-    fn has_bingo(&self, draws: &[i32]) -> bool {
+    pub fn has_bingo(&self, draws: &[i32]) -> bool {
         // obviously if there are less than 5 draws there can't be a bingo yet
         if draws.len() < 5 {
             return false;
