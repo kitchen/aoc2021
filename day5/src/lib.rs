@@ -7,6 +7,7 @@ use nom::{
     IResult,
 };
 use std::fmt;
+use std::cmp;
 use std::collections::HashSet;
 
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
@@ -37,35 +38,32 @@ impl Line {
     // returns the set of integer Points that make up this line
     pub fn points(&self) -> HashSet<Point> {
         let mut points = HashSet::new();
-        // "temporary" because I'm assuming the part2 will say "and also do this for diagonals based on X calculation"
-        if self.is_vh() {
-            if self.start.x == self.end.x {
-                if self.start.y < self.end.y {
-                    for y in (self.start.y)..=(self.end.y) {
-                        let point = Point { x: self.start.x, y: y };
-                        points.insert(point);
-                    }
-                } else {
-                    for y in (self.end.y)..=(self.start.y) {
-                        let point = Point { x: self.start.x, y: y };
-                        points.insert(point);
-                    }
-                }
-            } else {
-                if self.start.x < self.end.x {
-                    for x in (self.start.x)..=(self.end.x) {
-                        let point = Point { x: x, y: self.start.y };
-                        points.insert(point);
-                    }
-                } else {
-                    for x in (self.end.x)..=(self.start.x) {
-                        let point = Point { x: x, y: self.start.y };
-                        points.insert(point);
-                    }
-                }
-            }
+        let xs: Vec<i32>;
+        let ys: Vec<i32>;
+        let len_x = (self.start.x - self.end.x).abs();
+        let len_y = (self.start.y - self.end.y).abs();
+        
+        if self.start.x < self.end.x {
+            xs = (self.start.x..=self.end.x).collect();
+        } else if self.start.x == self.end.x {
+            xs = vec!(self.start.x; len_y as usize + 1);
         } else {
-            unimplemented!();
+            xs = (self.end.x..=self.start.x).rev().collect();
+        }
+        
+        if self.start.y < self.end.y {
+            ys = (self.start.y..=self.end.y).collect();
+        } else if self.start.y == self.end.y {
+            ys = vec!(self.start.y; len_x as usize + 1)
+        } else {
+            ys = (self.end.y..=self.start.y).rev().collect();
+        }
+        
+        for (x, y) in xs.iter().zip(ys.iter()) {
+            let point = Point { x: *x, y: *y };
+            println!("adding: {}", point);
+            points.insert(point);
+             
         }
         points
     }
@@ -161,7 +159,37 @@ mod tests {
     }
     
     #[test]
-    fn test_points_diagonal() {
+    fn test_points_diagonal_se() {
+        let line = Line {
+            start: Point { x: 1, y: 1 },
+            end: Point { x: 3, y: 3 },
+        };
+        
+        let res = line.points();
+        assert_eq!(res.len(), 3);
+        
+        let mut expected = HashSet::new();
+        expected.insert(Point { x: 1, y: 1 });
+        expected.insert(Point { x: 2, y: 2 });
+        expected.insert(Point { x: 3, y: 3 });
+        assert_eq!(res, expected);
+    }
+    
+    #[test]
+    fn test_points_diagonal_sw() {
+        let line = Line {
+            start: Point { x: 3, y: 3 },
+            end: Point { x: 1, y: 5 },
+        };
+        
+        let res = line.points();
+        assert_eq!(res.len(), 3);
+        
+        let mut expected = HashSet::new();
+        expected.insert(Point { x: 3, y: 3 });
+        expected.insert(Point { x: 2, y: 4 });
+        expected.insert(Point { x: 1, y: 5 });
+        assert_eq!(res, expected);
     }
     
 }
