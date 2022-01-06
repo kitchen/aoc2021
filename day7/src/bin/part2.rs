@@ -27,7 +27,8 @@ fn main() {
     
     for pos in min_pos..=max_pos {
         let total_fuel = crabs.iter().fold(0,|acc, crab| {
-            (1..=((crab-pos).abs())).sum::<i32>() + acc
+            let distance = (crab - pos).abs();
+            (distance * (distance + 1)) / 2 + acc
         });
         println!("pos: {}, total fuel: {}", pos, total_fuel);
         if best_fuel > total_fuel {
