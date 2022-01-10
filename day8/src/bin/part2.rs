@@ -1,6 +1,8 @@
 #![feature(stdin_forwarders)]
 
-use day8::parse;
+// use day8::{
+//     parse_patterns,
+// };
 use std::io::{self, Read};
 
 fn main() {
@@ -9,6 +11,5 @@ fn main() {
         .read_to_end(&mut buf)
         .expect("unable to read to end or something");
 
-    let (_, crabs) = parse(&buf).expect("unable to parse input");
 
 }
