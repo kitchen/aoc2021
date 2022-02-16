@@ -4,9 +4,9 @@ use dayDAY::parse;
 use std::io::{self, Read};
 
 fn main() {
-    let mut buf = Vec::new();
+    let mut buf = String::new();
     io::stdin()
-        .read_to_end(&mut buf)
+        .read_to_string(&mut buf)
         .expect("unable to read to end or something");
 
     let (_, crabs) = parse(&buf).expect("unable to parse input");
