@@ -4,7 +4,7 @@ use nom::character::complete::i32;
 use nom::multi::separated_list1;
 use nom::IResult;
 
-pub fn parse(input: String) -> IResult<String, Vec<i32>> {
+pub fn parse(input: &str) -> IResult<&str, Vec<i32>> {
     separated_list1(tag(","), i32)(input)
 }
 
